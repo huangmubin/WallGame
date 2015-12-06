@@ -2,7 +2,7 @@ import UIKit
 
 class ChessWall: UIView {
 
-    var datas = [String:SubModel]() {
+    var datas = [SubModel]() {
         didSet{
             setNeedsDisplay()
         }
@@ -13,7 +13,7 @@ class ChessWall: UIView {
         let distance = cellSize * 1.25
         
         kWallColor.setFill()
-        for data in datas.values {
+        for data in datas {
             let x = distance * CGFloat(data.x) + cellSize + (data.h ? -cellSize : 0)
             let y = distance * CGFloat(data.y) + cellSize + (data.h ? 0 : -cellSize)
             let rect = CGRectMake(x, y, cellSize * (data.h ? 2.25 : 0.25), cellSize * (data.h ? 0.25 : 2.25))

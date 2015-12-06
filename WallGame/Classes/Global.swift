@@ -10,28 +10,6 @@ func != (left: SubModel, right: SubModel) -> Bool {
     return !(left == right)
 }
 
-postfix operator ++ {}
-postfix operator -- {}
-postfix operator >> {}
-postfix operator << {}
-
-postfix func ++ (inout model: SubModel) -> SubModel {
-    model.y++
-    return model
-}
-postfix func -- (inout model: SubModel) -> SubModel {
-    model.y--
-    return model
-}
-postfix func >> (inout model: SubModel) -> SubModel {
-    model.x++
-    return model
-}
-postfix func << (inout model: SubModel) -> SubModel {
-    model.x--
-    return model
-}
-
 // MARK: - 初始化
 
 /** 启动时调用，设置默认值。 */
@@ -45,7 +23,8 @@ func kSetDefaultDatas() {
 }
 // 初次启动，设置一个初始化数据作为默认值
 private func firstLaunch() {
-    Model.saveData([Model()])
+    let model = Model()
+    model.saveData()
 }
 
 // MARK: - 全局变量
@@ -107,6 +86,14 @@ let kPlayerBColor = UIColor.redColor()
 
 /** 棋子指引颜色 */
 let kPlayerDirectColor = UIColor(red: 0, green: 0, blue: 1, alpha: 0.5)
+
+
+/** 墙壁指引颜色正常 */
+let kWallDirectColor = UIColor(red: 0, green: 0, blue: 1, alpha: 0.5)
+
+/** 墙壁指引颜色错误 */
+let kWallDirectColorWrong = UIColor.redColor()
+
 /**  */
 /**  */
 /**  */
