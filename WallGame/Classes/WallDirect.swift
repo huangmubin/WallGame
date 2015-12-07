@@ -8,7 +8,7 @@ protocol WallDirectDelegate: NSObjectProtocol {
 
 class WallDirect: UIView {
     
-    lazy var cellSize: CGFloat  = self.bounds.height / 11
+    lazy var cellSize: CGFloat = self.bounds.height / 11
     
     var data : [Int] = []
     
@@ -55,7 +55,7 @@ class WallDirect: UIView {
     func checkWallsIsAllow(wall: SubModel) -> Bool {
         // 1. 检查wall不重复
         if wall.x > 8 || wall.x < 0 || wall.y > 8 || wall.y < 0 {
-            wallLayer.backgroundColor = kWallDirectColorWrong.CGColor
+            setLayerColor(true)
             return false
         } else {
             let walls = GameLogic.takeWallsArr([wall])
@@ -67,21 +67,31 @@ class WallDirect: UIView {
             }
             // wall不重复，检查路线可不可行
             if !repeatW {
-                let path = GameLogic.checkBackLine(walls + data, locate: delegate!.data.APlayer, player: delegate!.data.APlayer)
-                if path.count == 0 {
-                    wallLayer.backgroundColor = kWallDirectColorWrong.CGColor
+                let APath = GameLogic.checkBackLine(walls + data, locate: delegate!.data.APlayer, player: delegate!.data.BPlayer)
+                let BPath = GameLogic.checkBackLine(walls + data, locate: delegate!.data.BPlayer, player: delegate!.data.APlayer)
+                if APath.count == 0 || BPath.count == 0 {
+                    setLayerColor(true)
                     return false
                 }
             } else {
-                wallLayer.backgroundColor = kWallDirectColorWrong.CGColor
+                setLayerColor(true)
                 return false
             }
         }
-        wallLayer.backgroundColor = kWallColor.CGColor
+        setLayerColor(false)
         return true
     }
     
     // MARK: - Layer
+    
+    /** 设置Layer颜色 */
+    func setLayerColor(wrong: Bool) {
+        if wrong {
+            wallLayer.backgroundColor = kWrongColor.CGColor
+        } else {
+            wallLayer.backgroundColor = kColor ? kWallColorA.CGColor : kWallColorB.CGColor
+        }
+    }
     
     /** 添加一个正方形的子层，再在其中添加一个绘制好的墙壁层。然后放到视图中。 */
     func addSubLayer(location: CGPoint) {
@@ -90,9 +100,9 @@ class WallDirect: UIView {
         sublayer.frame = CGRect(x: x, y: location.y - (delegate!.isAPlayer ? cellSize*1.75 : cellSize*0.5), width: cellSize*2.25, height: cellSize*2.25)
         
         wallLayer                 = CALayer()
-        wallLayer.frame           = CGRect(x: 0, y: cellSize, width: cellSize*2.25, height: cellSize*0.25)
-        wallLayer.cornerRadius    = 4
-        wallLayer.backgroundColor = kWallColor.CGColor
+        wallLayer.frame           = CGRect(x: 0, y: cellSize-1, width: cellSize*2.25, height: cellSize*0.25+2)
+        wallLayer.cornerRadius    = cellSize*0.1125
+        setLayerColor(false)
         
         sublayer.addSublayer(wallLayer)
         layer.addSublayer(sublayer)

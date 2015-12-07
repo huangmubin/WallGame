@@ -12,11 +12,15 @@ class PlayerDirect: UIView {
         let cellSize = bounds.height / 11
         let distance = cellSize * 1.25
         
-        kPlayerDirectColor.setFill()
+        if kColor {
+            kCellLineColorA.setFill()
+        } else {
+            kCellLineColorB.setFill()
+        }
         for data in datas {
             let x = CGFloat(data.x) * distance
             let y = CGFloat(data.y) * distance
-            let path = UIBezierPath(roundedRect: CGRectMake(x, y, cellSize, cellSize), cornerRadius: 8)
+            let path = UIBezierPath(roundedRect: CGRectMake(x, y, cellSize, cellSize), cornerRadius: 4)
             path.fill()
         }
     }

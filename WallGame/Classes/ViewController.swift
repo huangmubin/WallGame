@@ -12,6 +12,7 @@ class ViewController: UIViewController, PlayerDelegate, WallDirectDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         kSetDefaultDatas()
+        setColor()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -21,6 +22,7 @@ class ViewController: UIViewController, PlayerDelegate, WallDirectDelegate {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         initGameDidAppear()
+        kHeight = view.bounds.height
     }
 
     override func didReceiveMemoryWarning() {
@@ -31,13 +33,20 @@ class ViewController: UIViewController, PlayerDelegate, WallDirectDelegate {
         return true
     }
     
+    
+    func setColor() {
+        //
+        view.backgroundColor = kColor ? kBackgroundColorA : kBackgroundColorB
+        
+        // 
+    }
+    
     // MARK: 初始化
     
     /** 初始化游戏 */
     func initGameWillAppear() {
         initData()
         isAPlayer = data.AFirst
-        updatePlayerControl()
         initWallCountLabel()
         initStepsLabel()
         initButtons()
@@ -47,6 +56,8 @@ class ViewController: UIViewController, PlayerDelegate, WallDirectDelegate {
     func initGameDidAppear() {
         initChessWall()
         initPlayer()
+        initGameTipView()
+        updatePlayerControl()
     }
     
     // MARK: - Game Logic
@@ -58,6 +69,11 @@ class ViewController: UIViewController, PlayerDelegate, WallDirectDelegate {
     func reSetGame() {
         data = Model()
         arcPlayer()
+        updateStepsLabel()
+        updateWallCountLabel()
+        initChessWall()
+        initPlayer()
+        updatePlayerControl()
     }
     
     /** 变更游戏角色
@@ -87,37 +103,35 @@ class ViewController: UIViewController, PlayerDelegate, WallDirectDelegate {
             }
         }
         updateStepsLabel()
-        checkGameEnd()
-        isAPlayer = !isAPlayer
+        if !checkGameEnd() {
+            isAPlayer = !isAPlayer
+            updatePlayerControl()
+        }
         data.saveData()
-        updatePlayerControl()
     }
     
     /** 根据游戏角色决定控件有效性 */
     func updatePlayerControl() {
-        ARestartButton.enabled = isAPlayer
-        ARetractButton.enabled = isAPlayer
-        BRestartButton.enabled = !isAPlayer
-        BRetractButton.enabled = !isAPlayer
         if isAPlayer {
             view.insertSubview(APlayer, aboveSubview: wallDirect)
             view.insertSubview(BPlayer, belowSubview: wallDirect)
-            AInView.backgroundColor = UIColor.blueColor()
-            BInView.backgroundColor = UIColor.clearColor()
         } else {
             view.insertSubview(BPlayer, aboveSubview: wallDirect)
             view.insertSubview(APlayer, belowSubview: wallDirect)
-            AInView.backgroundColor = UIColor.clearColor()
-            BInView.backgroundColor = UIColor.blueColor()
         }
+        addPlayerWaitView()
     }
     
     /** 检查游戏是否已经结束 */
-    func checkGameEnd() {
+    func checkGameEnd() -> Bool {
         if data.APlayer.x == 8 {
-            print("游戏结束，A胜利")
+            addGameEndView(true)
+            return true
         } else if data.BPlayer.x == 0 {
-            print("游戏结束，B胜利")
+            addGameEndView(false)
+            return true
+        } else {
+            return false
         }
     }
     
@@ -174,43 +188,76 @@ class ViewController: UIViewController, PlayerDelegate, WallDirectDelegate {
     /** Chessboard */
     @IBOutlet weak var chessboard: Chessboard!
     
+    
+    // MARK: - WallDirect
+    
+    @IBOutlet weak var wallDirect: WallDirect!
+    
+    func initWallDirect() {
+        wallDirect.delegate = self
+    }
+    
+    // MARK: WallDirectDelegate
+    
+    func wallDirectTouchEnded(wall: SubModel) {
+        changePlayer(wall)
+    }
+    
+    // MARK: - ChessWall
+    
+    /** ChessWallView */
+    @IBOutlet weak var chessWall: ChessWall!
+    
+    /** initial Chess Wall */
+    func initChessWall() {
+        chessWall.datas = data.walls
+    }
+    
+    /** 添加墙壁 */
+    func addWall(wallModel: SubModel) {
+        data.walls.append(wallModel)
+        chessWall.datas.append(wallModel)
+    }
+
+    
     // MARK: - Game Controllers
+    
+    
     
     // MARK: Wall Count Label
     /** A木板数量标签 */
-    @IBOutlet weak var AwallCountLabel: UILabel!
+    @IBOutlet weak var AWallCountButton: UIButton!
     /** B木板数量标签 */
-    @IBOutlet weak var BwallCountLabel: UILabel!
+    @IBOutlet weak var BWallCountButton: UIButton!
     
     /** 初始化木板数量标签 */
     func initWallCountLabel() {
-        updateStepsLabel()
+        updateWallCountLabel()
         
-        AwallCountLabel.transform = CGAffineTransformMakeRotation(CGFloat(M_PI * 0.5))
-        BwallCountLabel.transform = CGAffineTransformMakeRotation(-CGFloat(M_PI * 0.5))
+        AWallCountButton.transform = CGAffineTransformMakeRotation(CGFloat(M_PI * 0.5))
+        BWallCountButton.transform = CGAffineTransformMakeRotation(-CGFloat(M_PI * 0.5))
     }
     
     /** 更新模板数量标签 */
     func updateWallCountLabel() {
-        AwallCountLabel.text = "Woods:\(data.AWallCount)"
-        BwallCountLabel.text = "Woods:\(data.BWallCount)"
+        AWallCountButton.setTitle("\(data.AWallCount)", forState: .Normal)
+        BWallCountButton.setTitle("\(data.BWallCount)", forState: .Normal)
     }
     
     
-    // MAKR: Steps Label
+    // MARK: Steps Label
     
     /** A剩余步数标签 */
-    @IBOutlet weak var AStepsLabel: UILabel!
+    @IBOutlet weak var AStepsButton: UIButton!
     /** B剩余步数标签 */
-    @IBOutlet weak var BStepsLabel: UILabel!
-    
+    @IBOutlet weak var BStepsButton: UIButton!
     
     /** 初始化步数标签 */
     func initStepsLabel() {
         updateStepsLabel()
         
-        AStepsLabel.transform = CGAffineTransformMakeRotation(CGFloat(M_PI * 0.5))
-        BStepsLabel.transform = CGAffineTransformMakeRotation(-CGFloat(M_PI * 0.5))
+        AStepsButton.transform = CGAffineTransformMakeRotation(CGFloat(M_PI * 0.5))
+        BStepsButton.transform = CGAffineTransformMakeRotation(-CGFloat(M_PI * 0.5))
     }
     
     /** 更新步数标签 */
@@ -218,8 +265,8 @@ class ViewController: UIViewController, PlayerDelegate, WallDirectDelegate {
         let walls = GameLogic.takeWallsArr(data.walls)
         let aSteps = GameLogic.checkBackLine(walls, locate: data.APlayer, player: data.BPlayer)
         let bSteps = GameLogic.checkBackLine(walls, locate: data.BPlayer, player: data.APlayer)
-        AStepsLabel.text = "Steps:\(aSteps.count)"
-        BStepsLabel.text = "Steps:\(bSteps.count)"
+        AStepsButton.setTitle("\(aSteps.count)", forState: .Normal)
+        BStepsButton.setTitle("\(bSteps.count)", forState: .Normal)
     }
     
     
@@ -248,41 +295,6 @@ class ViewController: UIViewController, PlayerDelegate, WallDirectDelegate {
         reSetGame()
     }
     
-    // MARK: Player View
-    
-    @IBOutlet weak var AInView: UIView!
-    @IBOutlet weak var BInView: UIView!
-    
-    
-    // MARK: - WallDirect
-    
-    @IBOutlet weak var wallDirect: WallDirect!
-    
-    func initWallDirect() {
-        wallDirect.delegate = self
-    }
-    
-    // MARK: WallDirectDelegate
-
-    func wallDirectTouchEnded(wall: SubModel) {
-        changePlayer(wall)
-    }
-    
-    // MARK: - ChessWall
-    
-    /** ChessWallView */
-    @IBOutlet weak var chessWall: ChessWall!
-    
-    /** initial Chess Wall */
-    func initChessWall() {
-        chessWall.datas = data.walls
-    }
-    
-    /** 添加墙壁 */
-    func addWall(wallModel: SubModel) {
-        data.walls.append(wallModel)
-        chessWall.datas.append(wallModel)
-    }
     
     // MARK: - 棋子
     
@@ -344,5 +356,129 @@ class ViewController: UIViewController, PlayerDelegate, WallDirectDelegate {
         
         playerDirect.datas = []
         return true
+    }
+    
+    
+    // MARK: - Game Tip View
+    
+    @IBOutlet weak var APlayerBackGroundView: BackGround!
+    
+    @IBOutlet weak var AGameTipView: BackGround!
+    @IBOutlet weak var BGameTipView: BackGround!
+    
+    @IBOutlet weak var AGameTipImage: UIImageView!
+    @IBOutlet weak var BGameTipImage: UIImageView!
+    
+    @IBOutlet weak var AGameTipViewLeading: NSLayoutConstraint!
+    @IBOutlet weak var AGameTipViewHeight: NSLayoutConstraint!
+    @IBOutlet weak var BGameTipViewTrailing: NSLayoutConstraint!
+    
+    /** 初始化游戏遮挡视图 */
+    func initGameTipView() {
+        AGameTipView.transform = CGAffineTransformMakeRotation(CGFloat(M_PI * 0.5))
+        BGameTipView.transform = CGAffineTransformMakeRotation(CGFloat(-M_PI * 0.5))
+    }
+    
+    /** 更新表情 */
+    func updateGameTipImage(image: UIImageView, i: Int, j: Int) {
+        let dis = i - j
+        switch dis {
+        case -100 ..< -10:
+            image.image = UIImage(named: "Face30")
+        case -10 ..< -5:
+            image.image = UIImage(named: "Face20")
+        case -5 ..< 0:
+            image.image = UIImage(named: "Face10")
+        case 0 ..< 2:
+            image.image = UIImage(named: "Face40")
+        case 2 ..< 5:
+            image.image = UIImage(named: "Face50")
+        default:
+            image.image = UIImage(named: "Face60")
+        }
+    }
+    
+    /** 更新视图位置到玩家区域 */
+    func updateGameTipView(iLayout: NSLayoutConstraint, jLayout: NSLayoutConstraint) {
+        let offset = (APlayerBackGroundView.frame.height - APlayerBackGroundView.frame.width) / 2
+        let height = APlayerBackGroundView.frame.height
+        UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .CurveEaseOut, animations: {
+                jLayout.constant = -height
+                iLayout.constant = -offset + 10
+                self.view.layoutIfNeeded()
+            }, completion: nil)
+    }
+    
+    /** 添加视图到玩家区域 */
+    func addPlayerWaitView() {
+        let i = Int(AStepsButton.titleLabel!.text!)!
+        let j = Int(BStepsButton.titleLabel!.text!)!
+        // A玩家则弹出B的视图
+        if isAPlayer {
+            updateGameTipImage(BGameTipImage, i: i, j: j)
+            updateGameTipView(BGameTipViewTrailing, jLayout: AGameTipViewLeading)
+        } else {
+            updateGameTipImage(AGameTipImage, i: j, j: i)
+            updateGameTipView(AGameTipViewLeading, jLayout: BGameTipViewTrailing)
+        }
+    }
+    
+    // MARK: 游戏结束操作
+    
+    @IBAction func GameEndViewTapGesture(sender: UITapGestureRecognizer) {
+        removeGameEndView()
+    }
+    
+    func addGameEndView(player: Bool) {
+        var draw = false
+        let nextSteps = GameLogic.checkMoveScope(player ? data.BPlayer : data.APlayer, OPlayer: player ? data.APlayer : data.BPlayer, walls: data.walls)
+        let finish = player ? 0 : 8
+        for step in nextSteps {
+            if step.x == finish {
+                draw = true
+                break
+            }
+        }
+        if draw {
+            AGameTipImage.image = UIImage(named: "Face50")
+            BGameTipImage.image = UIImage(named: "Face50")
+        } else {
+            AGameTipImage.image = player ? UIImage(named: "Face60") : UIImage(named: "Face30")
+            BGameTipImage.image = player ? UIImage(named: "Face30") : UIImage(named: "Face60")
+        }
+        
+        let height = APlayerBackGroundView.frame.height
+        let width = (view.bounds.width/2) - APlayerBackGroundView.frame.width - 15
+        UIView.animateWithDuration(0.3, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .CurveEaseInOut, animations: {
+                self.AGameTipViewLeading.constant = -height
+                self.BGameTipViewTrailing.constant = -height
+                self.view.layoutIfNeeded()
+            }) { (finish) -> Void in
+                self.AGameTipViewHeight.constant = width
+                self.view.layoutIfNeeded()
+                let offset = (self.AGameTipView.frame.height - self.AGameTipView.frame.width) / 2
+                UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .CurveEaseInOut, animations: {
+                    self.AGameTipViewLeading.constant =  -offset + 10
+                    self.BGameTipViewTrailing.constant =  -offset + 10
+                    self.view.layoutIfNeeded()
+                    }, completion: { (finish) -> Void in
+                        print("\(self.AGameTipView.frame)  \(self.view.frame)")
+                        self.AGameTipView.userInteractionEnabled = true
+                        self.BGameTipView.userInteractionEnabled = true
+                })
+        }
+    }
+    
+    func removeGameEndView() {
+        let height = APlayerBackGroundView.frame.height
+        UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .CurveEaseInOut, animations: {
+            self.AGameTipViewLeading.constant = -height
+            self.BGameTipViewTrailing.constant = -height
+            }) { (finish) -> Void in
+                self.AGameTipViewHeight.constant = 0
+                self.AGameTipView.userInteractionEnabled = false
+                self.BGameTipView.userInteractionEnabled = false
+                self.reSetGame()
+        }
     }
 }

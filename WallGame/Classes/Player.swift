@@ -13,7 +13,7 @@ class Player: UIView {
     var player: Bool = true
     
     // MARK: - 初始化视图内容
-    
+
     var cellSize: CGFloat = 0
     var distance: CGFloat = 0
     var origin:   CGPoint = CGPointZero
@@ -37,7 +37,11 @@ class Player: UIView {
     
     override func drawRect(rect: CGRect) {
         layer.cornerRadius    = bounds.height / 2
-        layer.backgroundColor = player ? kPlayerAColor.CGColor : kPlayerBColor.CGColor
+        let colorA = kColor ? kPlayerAColorA.CGColor : kPlayerAColorB.CGColor
+        let colorB = kColor ? kPlayerBColorA.CGColor : kPlayerBColorB.CGColor
+        layer.backgroundColor = player ? colorA : colorB
+        layer.borderColor     = kColor ? kLineColorA.CGColor : kLineColorB.CGColor
+        layer.borderWidth     = 1
     }
 
     // MARK: - 触摸事件
@@ -50,7 +54,7 @@ class Player: UIView {
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         
         location  = CGPoint(x: frame.midX, y: frame.midY)
-        oldOrigin = CGPoint(x: self.frame.origin.x + (player ? self.cellSize : -self.cellSize), y: self.frame.origin.y)
+        oldOrigin = CGPoint(x: self.frame.origin.x + (player ? cellSize : -cellSize), y: self.frame.origin.y)
         
         UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .CurveEaseOut, animations: {
                 self.frame.origin.x = self.frame.origin.x + (self.player ? self.cellSize : -self.cellSize)

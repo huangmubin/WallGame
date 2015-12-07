@@ -6,13 +6,20 @@ class Chessboard: UIView {
         let cellSize = bounds.height / 11
         let distance = cellSize * 1.25
         
-        kCellColor.setFill()
+        if kColor {
+            kCellLineColorA.setStroke()
+            kBackgroundColorA.setFill()
+        } else {
+            kCellLineColorB.setStroke()
+            kBackgroundColorB.setFill()
+        }
         for x in 0 ..< 9 {
             for y in 0 ..< 9 {
-                let x = CGFloat(x) * distance
-                let y = CGFloat(y) * distance
-                let path = UIBezierPath(roundedRect: CGRectMake(x, y, cellSize, cellSize), cornerRadius: 8)
+                let x = CGFloat(x) * distance + 1
+                let y = CGFloat(y) * distance + 1
+                let path = UIBezierPath(roundedRect: CGRectMake(x, y, cellSize - 2, cellSize - 2), cornerRadius: 4)
                 path.fill()
+                path.stroke()
             }
         }
         

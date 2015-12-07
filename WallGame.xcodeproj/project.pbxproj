@@ -18,7 +18,7 @@
 		9C99A28F1C11B87A00595DB2 /* ChessWall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C99A28E1C11B87A00595DB2 /* ChessWall.swift */; };
 		9C99A2911C11BD6000595DB2 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C99A2901C11BD6000595DB2 /* Player.swift */; };
 		9C99A2931C11CC2900595DB2 /* PlayerDirect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C99A2921C11CC2900595DB2 /* PlayerDirect.swift */; };
-		9CA7D8301C147B40004B894A /* GameOver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA7D82F1C147B40004B894A /* GameOver.swift */; };
+		9CA7D8301C147B40004B894A /* BackGround.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA7D82F1C147B40004B894A /* BackGround.swift */; };
 		9CCDAB7E1C128992001FA732 /* GameLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCDAB7D1C128992001FA732 /* GameLogic.swift */; };
 		9CCDAB801C12C1C3001FA732 /* WallDirect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CCDAB7F1C12C1C3001FA732 /* WallDirect.swift */; };
 /* End PBXBuildFile section */
@@ -37,7 +37,7 @@
 		9C99A28E1C11B87A00595DB2 /* ChessWall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ChessWall.swift; path = Classes/ChessWall.swift; sourceTree = "<group>"; };
 		9C99A2901C11BD6000595DB2 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Player.swift; path = Classes/Player.swift; sourceTree = "<group>"; };
 		9C99A2921C11CC2900595DB2 /* PlayerDirect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PlayerDirect.swift; path = Classes/PlayerDirect.swift; sourceTree = "<group>"; };
-		9CA7D82F1C147B40004B894A /* GameOver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameOver.swift; path = Classes/GameOver.swift; sourceTree = "<group>"; };
+		9CA7D82F1C147B40004B894A /* BackGround.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BackGround.swift; path = Classes/BackGround.swift; sourceTree = "<group>"; };
 		9CCDAB7D1C128992001FA732 /* GameLogic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameLogic.swift; path = Classes/GameLogic.swift; sourceTree = "<group>"; };
 		9CCDAB7F1C12C1C3001FA732 /* WallDirect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WallDirect.swift; path = Classes/WallDirect.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -138,10 +138,10 @@
 			children = (
 				9C99A28C1C11B09F00595DB2 /* Chessboard.swift */,
 				9C99A28E1C11B87A00595DB2 /* ChessWall.swift */,
-				9C99A2901C11BD6000595DB2 /* Player.swift */,
-				9C99A2921C11CC2900595DB2 /* PlayerDirect.swift */,
 				9CCDAB7F1C12C1C3001FA732 /* WallDirect.swift */,
-				9CA7D82F1C147B40004B894A /* GameOver.swift */,
+				9C99A2921C11CC2900595DB2 /* PlayerDirect.swift */,
+				9C99A2901C11BD6000595DB2 /* Player.swift */,
+				9CA7D82F1C147B40004B894A /* BackGround.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -187,6 +187,7 @@
 				TargetAttributes = {
 					9C98A5F11C10382E009FF40D = {
 						CreatedOnToolsVersion = 7.1;
+						DevelopmentTeam = W6XAGW63EX;
 					};
 				};
 			};
@@ -233,7 +234,7 @@
 				9CCDAB801C12C1C3001FA732 /* WallDirect.swift in Sources */,
 				9C383D821C10681B003CADDC /* Model.swift in Sources */,
 				9C99A2911C11BD6000595DB2 /* Player.swift in Sources */,
-				9CA7D8301C147B40004B894A /* GameOver.swift in Sources */,
+				9CA7D8301C147B40004B894A /* BackGround.swift in Sources */,
 				9C99A2931C11CC2900595DB2 /* PlayerDirect.swift in Sources */,
 				9C383D801C106464003CADDC /* ViewController.swift in Sources */,
 				9C98A5F61C10382E009FF40D /* AppDelegate.swift in Sources */,
@@ -349,6 +350,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = WallGame/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -362,6 +364,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = WallGame/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
